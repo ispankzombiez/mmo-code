@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String            @id @default(cuid())
+  email             String            @unique
+  username          String            @unique
+  passwordHash      String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  virtualComputers  VirtualComputer[]
+  rootFiles         VirtualFileSystem[]
+}
+
+model VirtualComputer {
+  id                String            @id @default(cuid())
+  ownerId           String
+  owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  hostname          String
+  dynamicIp         String            @unique
+  cpuCores          Int               @default(2)
+  memoryMb          Int               @default(2048)
+  storageMb         Int               @default(10240)
+  openPorts         Int[]             @default([])
+  vulnerabilityScore Int              @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  files             VirtualFileSystem[]
+
+  @@index([ownerId])
+  @@index([dynamicIp])
+}
+
+model VirtualFileSystem {
+  id                String            @id @default(cuid())
+  computerId        String
+  computer          VirtualComputer   @relation(fields: [computerId], references: [id], onDelete: Cascade)
+  ownerId           String
+  owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  parentId          String?
+  parent            VirtualFileSystem? @relation("FileTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children          VirtualFileSystem[] @relation("FileTree")
+  name              String
+  path              String
+  nodeType          VfsNodeType
+  content           String?
+  sizeBytes         Int               @default(0)
+  permissions       String            @default("rw-r--r--")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([computerId])
+  @@index([ownerId])
+  @@index([parentId])
+  @@index([path])
+}
+
+enum VfsNodeType {
+  FILE
+  DIRECTORY
+}
