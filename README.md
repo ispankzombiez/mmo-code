@@ -4,24 +4,24 @@ Monorepo scaffold for an Android MMO hacking simulator inspired by Grey Hack.
 
 ## Structure
 
-- `/home/runner/work/mmo-code/mmo-code/client` - Flutter Android client (APK target)
-- `/home/runner/work/mmo-code/mmo-code/server` - Node.js + TypeScript backend (REST + WebSocket + PostgreSQL)
-- `/home/runner/work/mmo-code/mmo-code/.devcontainer` - GitHub Codespaces cloud dev environment
+- `./client` - Flutter Android client (APK target)
+- `./server` - Node.js + TypeScript backend (REST + WebSocket + PostgreSQL)
+- `./.devcontainer` - GitHub Codespaces cloud dev environment
 
 ## Backend quick start (Codespaces)
 
 1. Open this repository in GitHub Codespaces.
 2. Wait for `.devcontainer/scripts/postCreate.sh` to finish.
 3. Start PostgreSQL locally for dev:
-   - `cd /home/runner/work/mmo-code/mmo-code/server`
+   - `cd server`
    - `docker compose up -d postgres`
 4. Configure env file:
-   - `cp /home/runner/work/mmo-code/mmo-code/server/.env.example /home/runner/work/mmo-code/mmo-code/server/.env`
+   - `cp .env.example .env`
 5. Run migrations and seed (after creating migration files):
-   - `cd /home/runner/work/mmo-code/mmo-code/server`
+   - `cd server`
    - `npx prisma generate --schema src/db/prisma/schema.prisma`
 6. Start backend server:
-   - `cd /home/runner/work/mmo-code/mmo-code/server`
+   - `cd server`
    - `npm run dev`
 
 Backend listens on `8080`, WebSocket path `/ws`.

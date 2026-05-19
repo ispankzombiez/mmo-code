@@ -83,7 +83,8 @@ export function registerWsGateway(server: HttpServer): void {
             },
           }),
         );
-      } catch {
+      } catch (error) {
+        console.error('WebSocket message parsing error:', error);
         socket.send(
           JSON.stringify({
             type: 'terminal.error',

@@ -1,6 +1,8 @@
 import { prisma } from '../client.js';
 
 async function main() {
+  const secretContent = 'demo-secret';
+
   const user = await prisma.user.upsert({
     where: { email: 'demo@mmo.local' },
     update: {},
@@ -40,8 +42,8 @@ async function main() {
         name: 'secrets.txt',
         path: '/home/secrets.txt',
         nodeType: 'FILE',
-        content: 'demo-secret',
-        sizeBytes: 11,
+        content: secretContent,
+        sizeBytes: Buffer.byteLength(secretContent, 'utf8'),
       },
     ],
     skipDuplicates: true,
